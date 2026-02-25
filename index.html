@@ -2,45 +2,95 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生日特调 - 平成魔女版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>生日特调 - 兽娘红茶馆风格</title>
     <style>
-        body { background-color: #2b1d42; color: #fff; text-align: center; font-family: sans-serif; margin: 0; padding: 20px; }
-        .cup-img { width: 80%; max-width: 300px; margin: 30px auto; border: 3px solid #ff00ff; display: block; box-shadow: 0 0 15px #ff00ff; }
-        #dialog { background: rgba(0,0,0,0.8); border: 2px solid #00ff00; padding: 15px; color: #00ff00; text-align: left; min-height: 50px; margin-top: 20px; }
-        .code-box { display: none; color: #ffff00; font-size: 24px; margin-top: 20px; font-weight: bold; text-shadow: 2px 2px #f00; }
+        /* 兽娘红茶馆配色：暖咖、奶油白、复古粉 */
+        body { background-color: #3d2b1f; color: #fdf5e6; margin: 0; padding: 0; overflow: hidden; font-family: "Zpix", "Courier New", monospace; }
+        #game-container { width: 100vw; height: 100vh; position: relative; background: url('bar_bg.png') center bottom/cover; }
+        
+        /* 像素对话框 */
+        #dialog-box {
+            position: absolute; bottom: 30px; left: 5%; width: 90%; 
+            background: rgba(61, 43, 31, 0.9); border: 3px solid #d4a373; 
+            padding: 15px; box-sizing: border-box; min-height: 80px; z-index: 100;
+        }
+
+        /* 蜡烛选择按钮组 */
+        #choice-panel {
+            display: none; position: absolute; top: 40%; width: 100%; text-align: center; z-index: 200;
+        }
+        .candle-btn {
+            display: inline-block; background: #faedcd; border: 2px solid #d4a373; 
+            margin: 5px; padding: 10px; border-radius: 10px; color: #3d2b1f;
+        }
+
+        #cocktail-display { position: absolute; top: 30%; left: 50%; transform: translateX(-50%); width: 250px; }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-    <h2 style="color: #ff00ff; text-shadow: 2px 2px #000;">Dice 占い - 生日版</h2>
-    
-    <div id="target" onclick="blow()" style="font-size: 80px; cursor: pointer;">🕯️</div>
 
-    <div id="dialog">
-        [系统]: 正在接入深夜酒吧... <br>
-        检测到特殊的能量源。请点击蜡烛许愿并吹灭它。
+    <audio id="bgm" loop><source src="rain_and_lofi.mp3" type="audio/mpeg"></audio>
+    <audio id="sfx-pour"><source src="pour_liquid.mp3" type="audio/mpeg"></audio>
+    <audio id="sfx-blow"><source src="blow_sound.mp3" type="audio/mpeg"></audio>
+
+    <div id="game-container">
+        <img id="cocktail-display" src="empty_glass.png">
+
+        <div id="choice-panel">
+            <div class="candle-btn" onclick="selectCandle('bear')">🧸 小熊蜡烛</div>
+            <div class="candle-btn" onclick="selectCandle('star')">⭐ 星星蜡烛</div>
+            <div class="candle-btn" onclick="selectCandle('heart')">💗 爱心蜡烛</div>
+        </div>
+
+        <div id="dialog-box" onclick="nextStep()">
+            <div id="text-content">欢迎光临，今晚是属于你的特别时刻... (点击继续)</div>
+        </div>
     </div>
 
-    <div id="code-box" class="code-box">
-        🎂 HAPPY BIRTHDAY! 🎂<br>
-        <small style="font-size: 14px;">异世界礼品码：</small><br>
-        NS-XXXX-XXXX-XXXX
-    </div>
+<script>
+    let step = 0;
+    const dialogText = [
+        "在这个细雨绵绵的深夜，想为你调一杯甜甜的梦。",
+        "先加入浓郁的奶油，还有一点点昨日的温柔... (正在倒入...)",
+        "最后，请挑选一支你最喜欢的蜡烛吧。"
+    ];
 
-    <script>
-        function blow() {
-            const d = document.getElementById('dialog');
-            const c = document.getElementById('code-box');
-            const t = document.getElementById('target');
-            t.style.filter = "brightness(0.2)";
-            t.innerHTML = "🕯️";
-            d.innerHTML = "[系统]: 愿望已记录。正在提取礼品码...";
-            setTimeout(() => {
-                d.style.display = 'none';
-                c.style.display = 'block';
-                document.body.style.backgroundColor = "#000";
-            }, 1500);
+    function nextStep() {
+        const bgm = document.getElementById('bgm');
+        if(bgm.paused) bgm.play(); // 第一次点击触发音乐播放
+
+        if (step < dialogText.length - 1) {
+            step++;
+            document.getElementById('text-content').innerText = dialogText[step];
+            
+            if(step === 1) {
+                document.getElementById('sfx-pour').play(); // 播放倒酒声
+                document.getElementById('cocktail-display').src = "mixing_anim.gif";
+            }
+            if(step === 2) {
+                document.getElementById('choice-panel').style.display = 'block';
+            }
         }
-    </script>
+    }
+
+    function selectCandle(type) {
+        document.getElementById('choice-panel').style.display = 'none';
+        document.getElementById('cocktail-display').src = `final_${type}.png`;
+        document.getElementById('text-content').innerHTML = "蜡烛已插好。闭上眼许个愿，然后点击吹灭它。";
+        
+        document.getElementById('cocktail-display').onclick = function() {
+            document.getElementById('sfx-blow').play();
+            // 熄灭转场
+            document.body.style.backgroundColor = "black";
+            document.getElementById('game-container').style.opacity = "0.2";
+            setTimeout(() => {
+                alert("祝你生日快乐！兑换码：NS-XXXX-XXXX");
+                // 这里可以替换成更有仪式感的信封弹出代码
+            }, 1000);
+        };
+    }
+</script>
 </body>
 </html>
