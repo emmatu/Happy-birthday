@@ -1,81 +1,174 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ramos Gin Fizz - Birthday Edition</title>
+    <title>Birthday Special - Ramos Gin Fizz</title>
     <style>
-        /* 核心排版：模拟 3DS 双屏 */
-        body { 
-            background-color: #1a1a1a; 
-            margin: 0; padding: 0; 
-            display: flex; justify-content: center; align-items: center; 
-            height: 100vh; overflow: hidden;
-            font-family: sans-serif;
+        :root {
+            --main-pink: #ffb7c5;
+            --dark-pink: #d42d6d;
+            --border-color: #f8e1e7;
+            --retro-brown: #3d2b1f;
         }
 
+        body { 
+            background-color: #1a1a1a; margin: 0; padding: 0; 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; overflow: hidden; font-family: "Courier New", Courier, monospace;
+        }
+
+        /* 9:16 手机容器 */
         #phone-screen {
-            width: 100vw; height: 177.78vw; /* 9:16 比例 */
-            max-width: 450px; max-height: 800px;
-            background: #ffb7c5; /* 参考你图中的少女粉 */
-            position: relative;
-            border: 8px solid #f8e1e7;
-            box-sizing: border-box;
+            width: 100vw; height: 177.78vw; max-width: 430px; max-height: 765px;
+            background: var(--main-pink); position: relative;
+            border: 8px solid var(--border-color); box-sizing: border-box;
             display: flex; flex-direction: column;
         }
 
-        /* 上半部分：3DS“上屏” - 视觉展示区 */
+        /* 上屏：视觉展示区 */
         #display-area {
-            flex: 1.2;
-            background: #3d2b1f; /* 深咖啡色背景 */
-            position: relative;
-            margin: 10px; border-radius: 10px;
-            overflow: hidden;
+            flex: 1.2; background: var(--retro-brown); position: relative;
+            margin: 15px; border-radius: 12px; overflow: hidden;
             border: 4px solid #d4a373;
         }
+        #main-img { width: 100%; height: 100%; object-fit: cover; transition: all 0.3s; }
 
-        #main-img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* 下半部分：3DS“下屏” - 交互与对话区 */
-        #ui-area {
-            flex: 1;
-            padding: 15px;
-            display: flex; flex-direction: column;
-            gap: 15px;
+        /* iOS 补偿方案：视觉抖动动画 */
+        .visual-shake {
+            animation: shake-anim 0.2s cubic-bezier(.36,.07,.19,.97) infinite;
+        }
+        @keyframes shake-anim {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
         }
 
-        /* 对话框 */
+        /* 下屏：交互区 */
+        #ui-area { flex: 1; padding: 10px 20px; display: flex; flex-direction: column; gap: 15px; }
+
+        /* 3DS 风格对话框 */
         #dialog-box {
-            background: rgba(255, 255, 255, 0.9);
-            border: 3px solid #ff69b4;
-            border-radius: 15px;
-            padding: 15px;
-            height: 80px;
-            color: #d42d6d;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
+            background: rgba(255, 255, 255, 0.9); border: 3px solid var(--dark-pink);
+            border-radius: 15px; padding: 15px; min-height: 80px;
+            color: var(--dark-pink); font-size: 14px; line-height: 1.5;
+            cursor: pointer; position: relative;
         }
+        #dialog-box::after { content: "▼"; position: absolute; bottom: 5px; right: 10px; font-size: 10px; }
 
-        /* 华丽的进度条动画（酒精浓度） */
-        .slider-container {
-            background: #fff;
-            padding: 10px; border-radius: 20px;
-            border: 2px solid #ff69b4;
-            display: flex; align-items: center; gap: 10px;
+        /* 浓度滑动条 */
+        .slider-box {
+            background: white; padding: 10px; border-radius: 20px;
+            border: 2px solid var(--dark-pink); display: flex; align-items: center; gap: 10px;
         }
+        input[type=range] { flex: 1; accent-color: var(--dark-pink); }
 
-        input[type=range] {
-            flex: 1; accent-color: #ff69b4;
-        }
-
-        /* 按钮样式 */
-        .btn-grid {
-            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
-        }
-
+        /* 按钮组 */
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
         .pixel-btn {
-            background: #fff; border: 2px solid #ff69b4;
-            border-radius: 10px; padding: 10px;
-            font-size: 12px; color: #ff69b4;
-            cursor: pointer; text-align: center;
+            background: white; border: 2px solid var(--dark-pink); border-radius: 10px;
+            padding: 8px; font-size: 12px; color: var(--dark-pink); text-align: center;
+        }
+        .pixel-btn:active { background: #ffebf0; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <audio id="bgm" loop><source src="bgm.mp3" type="audio/mpeg"></audio>
+    <audio id="sfx-shake"><source src="shake.mp3" type="audio/mpeg"></audio>
+    <audio id="sfx-pour"><source src="pour.mp3" type="audio/mpeg"></audio>
+    <audio id="sfx-blow"><source src="blow.mp3" type="audio/mpeg"></audio>
+
+    <div id="phone-screen">
+        <div id="display-area">
+            <img id="main-img" src="bar_bg.png">
+        </div>
+
+        <div id="ui-area">
+            <div id="dialog-box" onclick="handleLogic()">
+                <div id="text-content">欢迎光临深夜食堂。今晚是你的生日，想来一杯特调的 Ramos Gin Fizz 吗？</div>
+            </div>
+
+            <div id="step-alcohol" class="slider-box">
+                <span style="font-size: 12px; color: var(--dark-pink);">酒精浓度</span>
+                <input type="range" id="alc-range" min="0" max="12" value="5">
+                <span id="alc-val" style="font-size: 12px; color: var(--dark-pink);">5%</span>
+            </div>
+
+            <div id="step-candle" class="btn-group hidden">
+                <div class="pixel-btn" onclick="addCandle('bear')">🧸 熊熊</div>
+                <div class="pixel-btn" onclick="addCandle('star')">⭐ 星星</div>
+                <div class="pixel-btn" onclick="addCandle('heart')">💗 爱心</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let state = "START";
+        const mainImg = document.getElementById('main-img');
+        const textContent = document.getElementById('text-content');
+        const bgm = document.getElementById('bgm');
+        const sfxShake = document.getElementById('sfx-shake');
+        const sfxPour = document.getElementById('sfx-pour');
+        const sfxBlow = document.getElementById('sfx-blow');
+
+        // 更新浓度数值
+        document.getElementById('alc-range').oninput = function() {
+            document.getElementById('alc-val').innerText = this.value + "%";
+        }
+
+        function handleLogic() {
+            // iOS 必须在第一次点击时播放声音以解锁权限
+            if (bgm.paused) bgm.play();
+
+            switch(state) {
+                case "START":
+                    state = "SHAKING";
+                    textContent.innerHTML = "浓度已锁定！加入金酒、奶油、蛋清...<br>现在，[点击对话框] 开始大力摇晃！";
+                    document.getElementById('step-alcohol').classList.add('hidden');
+                    break;
+
+                case "SHAKING":
+                    state = "POURING";
+                    textContent.innerHTML = "（大力摇晃中...）<br>酒液正在变得像云朵一样蓬松！";
+                    mainImg.src = "shaking.gif";
+                    mainImg.classList.add('visual-shake'); // 开启视觉抖动
+                    sfxShake.play();
+                    break;
+
+                case "POURING":
+                    state = "CANDLE_SELECT";
+                    sfxShake.pause();
+                    sfxPour.play();
+                    mainImg.classList.remove('visual-shake'); // 关闭抖动
+                    textContent.innerHTML = "看！厚厚的奶泡升起来了，就像蛋糕一样。<br>选一支你喜欢的蜡烛吧：";
+                    mainImg.src = "Ramos_finished.png";
+                    document.getElementById('step-candle').classList.remove('hidden');
+                    break;
+            }
+        }
+
+        function addCandle(type) {
+            state = "WISH";
+            textContent.innerHTML = "蜡烛已点燃。闭上眼许个愿...<br>准备好后，[点击酒杯] 吹灭它。";
+            mainImg.src = `final_${type}.png`;
+            document.getElementById('step-candle').classList.add('hidden');
+
+            mainImg.onclick = function() {
+                if (state === "WISH") {
+                    sfxBlow.play();
+                    document.body.style.backgroundColor = "black";
+                    document.getElementById('phone-screen').style.opacity = "0.1";
+                    setTimeout(() => {
+                        alert("🎂 生日快乐！\n你的礼物兑换码：NS-HAPPY-2026");
+                        location.reload(); // 重置
+                    }, 1200);
+                }
+            };
+        }
+    </script>
+</body>
+</html>
