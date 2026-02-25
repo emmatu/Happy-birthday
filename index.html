@@ -8,7 +8,7 @@
         :root {
             --main-pink: #ffb7c5;
             --dark-pink: #d42d6d;
-            --border-color: #f8e1e7;
+            --soft-pink: #ffebf0;
             --retro-brown: #3d2b1f;
         }
 
@@ -18,59 +18,66 @@
             height: 100vh; overflow: hidden; font-family: "Courier New", Courier, monospace;
         }
 
-        /* 9:16 手机容器 */
+        /* 9:16 手机容器适配 */
         #phone-screen {
             width: 100vw; height: 177.78vw; max-width: 430px; max-height: 765px;
             background: var(--main-pink); position: relative;
-            border: 8px solid var(--border-color); box-sizing: border-box;
+            border: 8px solid #f8e1e7; box-sizing: border-box;
             display: flex; flex-direction: column;
         }
 
-        /* 上屏：视觉展示区 */
+        /* 上屏：视觉展示区 (占比约 70%) */
         #display-area {
-            flex: 1.2; background: var(--retro-brown); position: relative;
-            margin: 15px; border-radius: 12px; overflow: hidden;
-            border: 4px solid #d4a373;
+            flex: 2.3; background: var(--retro-brown); position: relative;
+            margin: 15px 15px 5px 15px; border-radius: 12px; overflow: hidden;
+            border: 4px solid #f8e1e7;
         }
         #main-img { width: 100%; height: 100%; object-fit: cover; transition: all 0.3s; }
 
-        /* iOS 补偿方案：视觉抖动动画 */
-        .visual-shake {
-            animation: shake-anim 0.2s cubic-bezier(.36,.07,.19,.97) infinite;
-        }
-        @keyframes shake-anim {
-            10%, 90% { transform: translate3d(-1px, 0, 0); }
-            20%, 80% { transform: translate3d(2px, 0, 0); }
-            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
-            40%, 60% { transform: translate3d(4px, 0, 0); }
+        /* 下屏：交互区 (占比约 30%) */
+        #ui-area { 
+            flex: 1; padding: 5px 20px 20px 20px; 
+            display: flex; flex-direction: column; justify-content: flex-start; gap: 10px; 
         }
 
-        /* 下屏：交互区 */
-        #ui-area { flex: 1; padding: 10px 20px; display: flex; flex-direction: column; gap: 15px; }
-
-        /* 3DS 风格对话框 */
+        /* 深度还原参考图：3DS 风格半透明对话框 */
         #dialog-box {
-            background: rgba(255, 255, 255, 0.9); border: 3px solid var(--dark-pink);
-            border-radius: 15px; padding: 15px; min-height: 80px;
-            color: var(--dark-pink); font-size: 14px; line-height: 1.5;
+            background: rgba(255, 235, 240, 0.85); /* 半透明浅粉 */
+            border: 4px solid var(--dark-pink);
+            border-radius: 8px; padding: 12px; min-height: 95px;
+            color: #5a3e3e; /* 优雅深棕色字 */
+            font-size: 15px; line-height: 1.6;
             cursor: pointer; position: relative;
+            box-shadow: inset 0 0 10px rgba(212, 45, 109, 0.1);
         }
-        #dialog-box::after { content: "▼"; position: absolute; bottom: 5px; right: 10px; font-size: 10px; }
+        #dialog-box::after { 
+            content: "tap to continue"; position: absolute; bottom: 8px; right: 12px; 
+            font-size: 9px; color: var(--dark-pink); opacity: 0.7; 
+        }
 
-        /* 浓度滑动条 */
+        /* 酒精选择滑动条 */
         .slider-box {
-            background: white; padding: 10px; border-radius: 20px;
-            border: 2px solid var(--dark-pink); display: flex; align-items: center; gap: 10px;
+            background: rgba(255, 255, 255, 0.6); padding: 8px 15px; border-radius: 20px;
+            border: 2px solid var(--main-pink); display: flex; align-items: center; gap: 10px;
         }
-        input[type=range] { flex: 1; accent-color: var(--dark-pink); }
+        input[type=range] { flex: 1; accent-color: var(--dark-pink); cursor: pointer; }
 
-        /* 按钮组 */
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        /* 蜡烛按钮组 */
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
         .pixel-btn {
             background: white; border: 2px solid var(--dark-pink); border-radius: 10px;
             padding: 8px; font-size: 12px; color: var(--dark-pink); text-align: center;
+            box-shadow: 0 2px 0 var(--main-pink);
         }
-        .pixel-btn:active { background: #ffebf0; }
+        .pixel-btn:active { transform: translateY(2px); box-shadow: none; }
+
+        /* 视觉抖动动画 */
+        .visual-shake { animation: shake-anim 0.2s infinite; }
+        @keyframes shake-anim {
+            0% { transform: translate(1px, 1px); }
+            50% { transform: translate(-1px, -1px); }
+            100% { transform: translate(1px, -1px); }
+        }
 
         .hidden { display: none !important; }
     </style>
@@ -93,9 +100,9 @@
             </div>
 
             <div id="step-alcohol" class="slider-box">
-                <span style="font-size: 12px; color: var(--dark-pink);">酒精浓度</span>
+                <span style="font-size: 11px; color: var(--dark-pink);">微醺程度</span>
                 <input type="range" id="alc-range" min="0" max="12" value="5">
-                <span id="alc-val" style="font-size: 12px; color: var(--dark-pink);">5%</span>
+                <span id="alc-val" style="font-size: 11px; color: var(--dark-pink);">5%</span>
             </div>
 
             <div id="step-candle" class="btn-group hidden">
@@ -115,19 +122,17 @@
         const sfxPour = document.getElementById('sfx-pour');
         const sfxBlow = document.getElementById('sfx-blow');
 
-        // 更新浓度数值
         document.getElementById('alc-range').oninput = function() {
             document.getElementById('alc-val').innerText = this.value + "%";
         }
 
         function handleLogic() {
-            // iOS 必须在第一次点击时播放声音以解锁权限
             if (bgm.paused) bgm.play();
 
             switch(state) {
                 case "START":
                     state = "SHAKING";
-                    textContent.innerHTML = "浓度已锁定！加入金酒、奶油、蛋清...<br>现在，[点击对话框] 开始大力摇晃！";
+                    textContent.innerHTML = "浓度已锁定！加入金酒、奶油、蛋清...<br>现在，点击对话框开始大力摇晃！";
                     document.getElementById('step-alcohol').classList.add('hidden');
                     break;
 
@@ -135,7 +140,7 @@
                     state = "POURING";
                     textContent.innerHTML = "（大力摇晃中...）<br>酒液正在变得像云朵一样蓬松！";
                     mainImg.src = "shaking.gif";
-                    mainImg.classList.add('visual-shake'); // 开启视觉抖动
+                    mainImg.classList.add('visual-shake');
                     sfxShake.play();
                     break;
 
@@ -143,8 +148,8 @@
                     state = "CANDLE_SELECT";
                     sfxShake.pause();
                     sfxPour.play();
-                    mainImg.classList.remove('visual-shake'); // 关闭抖动
-                    textContent.innerHTML = "看！厚厚的奶泡升起来了，就像蛋糕一样。<br>选一支你喜欢的蜡烛吧：";
+                    mainImg.classList.remove('visual-shake');
+                    textContent.innerHTML = "看！厚厚的奶泡升起来了，就像生日蛋糕一样。选一支蜡烛吧：";
                     mainImg.src = "Ramos_finished.png";
                     document.getElementById('step-candle').classList.remove('hidden');
                     break;
@@ -153,7 +158,7 @@
 
         function addCandle(type) {
             state = "WISH";
-            textContent.innerHTML = "蜡烛已点燃。闭上眼许个愿...<br>准备好后，[点击酒杯] 吹灭它。";
+            textContent.innerHTML = "蜡烛已点燃。闭上眼许个愿...<br>准备好后，点击酒杯吹灭它。";
             mainImg.src = `final_${type}.png`;
             document.getElementById('step-candle').classList.add('hidden');
 
@@ -164,7 +169,7 @@
                     document.getElementById('phone-screen').style.opacity = "0.1";
                     setTimeout(() => {
                         alert("🎂 生日快乐！\n你的礼物兑换码：NS-HAPPY-2026");
-                        location.reload(); // 重置
+                        location.reload();
                     }, 1200);
                 }
             };
