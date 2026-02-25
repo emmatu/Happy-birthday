@@ -1,29 +1,81 @@
-// 状态机变量
-let state = "CHOOSING_ALCOHOL"; 
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ramos Gin Fizz - Birthday Edition</title>
+    <style>
+        /* 核心排版：模拟 3DS 双屏 */
+        body { 
+            background-color: #1a1a1a; 
+            margin: 0; padding: 0; 
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; overflow: hidden;
+            font-family: sans-serif;
+        }
 
-function handleInteraction() {
-    switch(state) {
-        case "CHOOSING_ALCOHOL":
-            playSFX('click');
-            updateText("正在调配...加入60ml金酒（已降度）和特调淡奶油...");
-            showAnimation("pouring_ingredients"); // 播放投料动画
-            state = "SHAKING";
-            break;
-            
-        case "SHAKING":
-            playSFX('shake_sound'); // 播放大力摇晃的ASMR
-            updateText("Ramos的奥秘在于摇晃...酒液正在变得像云朵一样蓬松！");
-            showAnimation("shaker_vibrating");
-            state = "POURING";
-            break;
-            
-        case "POURING":
-            playSFX('fizz_sound'); // 播放气泡升起的嘶嘶声
-            updateText("哇！看这层厚厚的奶泡，就像生日蛋糕一样。");
-            showAnimation("drink_rising");
-            state = "CHOOSE_CANDLE";
-            break;
-            
-        // 后面接选择蜡烛和吹灭逻辑...
-    }
-}
+        #phone-screen {
+            width: 100vw; height: 177.78vw; /* 9:16 比例 */
+            max-width: 450px; max-height: 800px;
+            background: #ffb7c5; /* 参考你图中的少女粉 */
+            position: relative;
+            border: 8px solid #f8e1e7;
+            box-sizing: border-box;
+            display: flex; flex-direction: column;
+        }
+
+        /* 上半部分：3DS“上屏” - 视觉展示区 */
+        #display-area {
+            flex: 1.2;
+            background: #3d2b1f; /* 深咖啡色背景 */
+            position: relative;
+            margin: 10px; border-radius: 10px;
+            overflow: hidden;
+            border: 4px solid #d4a373;
+        }
+
+        #main-img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* 下半部分：3DS“下屏” - 交互与对话区 */
+        #ui-area {
+            flex: 1;
+            padding: 15px;
+            display: flex; flex-direction: column;
+            gap: 15px;
+        }
+
+        /* 对话框 */
+        #dialog-box {
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid #ff69b4;
+            border-radius: 15px;
+            padding: 15px;
+            height: 80px;
+            color: #d42d6d;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* 华丽的进度条动画（酒精浓度） */
+        .slider-container {
+            background: #fff;
+            padding: 10px; border-radius: 20px;
+            border: 2px solid #ff69b4;
+            display: flex; align-items: center; gap: 10px;
+        }
+
+        input[type=range] {
+            flex: 1; accent-color: #ff69b4;
+        }
+
+        /* 按钮样式 */
+        .btn-grid {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;
+        }
+
+        .pixel-btn {
+            background: #fff; border: 2px solid #ff69b4;
+            border-radius: 10px; padding: 10px;
+            font-size: 12px; color: #ff69b4;
+            cursor: pointer; text-align: center;
