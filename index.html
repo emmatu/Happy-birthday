@@ -3,59 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>生日特调 - 都市传说版</title>
+    <title>生日特调 - 平成魔女版</title>
     <style>
-        body { background-color: #2b1d42; color: #fff; text-align: center; font-family: sans-serif; margin: 0; overflow: hidden; }
-        /* 模拟 3DS 的扫描线 */
-        body::after { content: ""; position: fixed; inset: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%); background-size: 100% 4px; pointer-events: none; }
-        
-        #main-container { padding: 20px; }
-        .cup-img { width: 200px; margin-top: 50px; border: 3px solid #ff00ff; box-shadow: 0 0 15px #ff00ff; cursor: pointer; }
-        
-        #dialog {
-            margin: 20px auto; width: 85%; background: rgba(0,0,0,0.8);
-            border: 2px solid #00ff00; padding: 15px; min-height: 60px;
-            color: #00ff00; font-size: 14px; text-align: left;
-        }
-
-        .code-box { display: none; color: #ffff00; font-size: 20px; margin-top: 20px; text-shadow: 2px 2px #f00; }
+        body { background-color: #2b1d42; color: #fff; text-align: center; font-family: sans-serif; margin: 0; padding: 20px; }
+        .cup-img { width: 80%; max-width: 300px; margin: 30px auto; border: 3px solid #ff00ff; display: block; box-shadow: 0 0 15px #ff00ff; }
+        #dialog { background: rgba(0,0,0,0.8); border: 2px solid #00ff00; padding: 15px; color: #00ff00; text-align: left; min-height: 50px; margin-top: 20px; }
+        .code-box { display: none; color: #ffff00; font-size: 24px; margin-top: 20px; font-weight: bold; text-shadow: 2px 2px #f00; }
     </style>
 </head>
 <body>
+    <h2 style="color: #ff00ff; text-shadow: 2px 2px #000;">Dice 占い - 生日版</h2>
+    
+    <div id="target" onclick="blow()" style="font-size: 80px; cursor: pointer;">🕯️</div>
 
-<div id="main-container">
-    <h2 style="color: #ff00ff;">Dice 占い - 生日版</h2>
-    
-    <img src="cup.jpg" class="cup-img" id="cup" onclick="blowCandle()">
-    
     <div id="dialog">
         [系统]: 正在接入深夜酒吧... <br>
-        检测到特殊的能量源。请点击酒杯，熄灭小熊的蜡烛。
+        检测到特殊的能量源。请点击蜡烛许愿并吹灭它。
     </div>
 
     <div id="code-box" class="code-box">
         🎂 HAPPY BIRTHDAY! 🎂<br>
-        <small>兑换码：</small><br>
-        <strong>NS-XXXX-XXXX-XXXX</strong>
+        <small style="font-size: 14px;">异世界礼品码：</small><br>
+        NS-XXXX-XXXX-XXXX
     </div>
-</div>
 
-<script>
-    function blowCandle() {
-        const dialog = document.getElementById('dialog');
-        const codeBox = document.getElementById('code-box');
-        const cup = document.getElementById('cup');
-
-        // 模拟熄灭效果
-        cup.style.filter = "brightness(0.3) grayscale(1)";
-        dialog.innerHTML = "[系统]: 愿望已记录。正在从异世界提取礼品码...";
-        
-        setTimeout(() => {
-            dialog.style.display = 'none';
-            codeBox.style.display = 'block';
-            document.body.style.backgroundColor = "#000";
-        }, 2000);
-    }
-</script>
+    <script>
+        function blow() {
+            const d = document.getElementById('dialog');
+            const c = document.getElementById('code-box');
+            const t = document.getElementById('target');
+            t.style.filter = "brightness(0.2)";
+            t.innerHTML = "🕯️";
+            d.innerHTML = "[系统]: 愿望已记录。正在提取礼品码...";
+            setTimeout(() => {
+                d.style.display = 'none';
+                c.style.display = 'block';
+                document.body.style.backgroundColor = "#000";
+            }, 1500);
+        }
+    </script>
 </body>
 </html>
